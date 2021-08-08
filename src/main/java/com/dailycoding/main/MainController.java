@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class mainController {
+public class MainController {
 
     @GetMapping("/")
     public String home(@CurrentUser Account account, Model model) {
