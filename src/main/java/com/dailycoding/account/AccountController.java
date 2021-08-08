@@ -2,6 +2,7 @@ package com.dailycoding.account;
 
 import com.dailycoding.domain.Account;
 import lombok.RequiredArgsConstructor;
+import org.dom4j.rule.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -72,6 +72,15 @@ public class AccountController {
         return view;
      }
 
+    @GetMapping("resend-confirm-email")
+    public String resendConfirmEmail(@CurrentUser Account account, Model model) {
+        if(!account.canSendConfirmEmail()) {
+            model.addAttribute("error", "인증 이메일은 1시간에 한 번만 전송할 수 있습니다.");
+            model.addAttribute("email", account.getEmail());
+            return "account/check-email";
+        }
 
-
+        accountService.sendSingUpConfirmEmail(account);
+        return "redirect:/";
+    }
 }
