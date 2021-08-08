@@ -34,6 +34,12 @@ public class AccountController {
         return "account/sign-up";
     }
 
+    @GetMapping("/check-email")
+    public String checkEmail(@CurrentUser Account account, Model model) {
+        model.addAttribute("email", account.getEmail());
+        return "account/check-email";
+    }
+
     @PostMapping("/sign-up")
     public String signUpSubmit(@Valid SignUpForm signUpForm, Errors errors){
         if (errors.hasErrors()) {
