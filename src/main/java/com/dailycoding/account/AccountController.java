@@ -1,11 +1,7 @@
 package com.dailycoding.account;
 
-import com.dailycoding.ConsoleMailSender;
 import com.dailycoding.domain.Account;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -15,6 +11,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,6 +19,7 @@ public class AccountController {
 
     private final SignUpFromValidator signUpFromValidator;
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
 
     //해당 타입의 CamelCase 를 따라감
     //즉 하기의 sign-up form을 받을때 하기의 로직으로 검증
@@ -41,10 +39,32 @@ public class AccountController {
         if (errors.hasErrors()) {
             return "account/sign-up";
         }
-       accountService.processNewAccount(signUpForm);
-
+        Account account = accountService.processNewAccount(signUpForm);
+        accountService.login(account);
         return "redirect:/";
     }
+
+    @GetMapping("/check-email-token")
+    public String checkEmailToken(String token, String email, Model model) {
+        String view = "account/checked-email";
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            model.addAttribute("error", "wrong email");
+            return view;
+        }
+
+        if (!account.isValidToken(token)) {
+            model.addAttribute("error", "wrong token");
+            return view;
+        }
+
+        account.completeSignUp();
+        accountService.login(account);
+        model.addAttribute("numberOfUser", accountRepository.count());
+        model.addAttribute("nickname", account.getNickname());
+
+        return view;
+     }
 
 
 
