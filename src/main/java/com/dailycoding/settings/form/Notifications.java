@@ -1,4 +1,4 @@
-package com.dailycoding.settings;
+package com.dailycoding.settings.form;
 
 import com.dailycoding.domain.Account;
 import lombok.Data;

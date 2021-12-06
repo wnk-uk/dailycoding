@@ -1,13 +1,14 @@
 package com.dailycoding.account;
 
 import com.dailycoding.domain.Account;
-import com.dailycoding.settings.Profile;
+import com.dailycoding.settings.form.Notifications;
+import com.dailycoding.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +28,7 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     private Account saveNewAccount(@Valid SignUpForm signUpForm) {
         Account account = Account.builder()
@@ -87,10 +89,29 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateProfile(Account account, Profile profile) {
-        account.setUrl(profile.getUrl());
+        //객체 필드명이 동일한 경우 맵핑해준다.
+        modelMapper.map(profile, account);
+        /*account.setUrl(profile.getUrl());
         account.setOccupation(profile.getOccupation());
         account.setLocation(profile.getLocation());
         account.setBio(profile.getBio());
+        account.setProfileImage(profile.getProfileImage());*/
+        accountRepository.save(account);
+    }
+
+    public void updatePassword(Account account, String newPassword) {
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account); //merge
+    }
+
+    public void updateNotifications(Account account, Notifications notifications) {
+        modelMapper.map(notifications, account);
+        /*account.setStudyCreateByEmail(notifications.isStudyCreatedByEmail());
+        account.setStudyCreateByWeb(notifications.isStudyCreatedByWeb());
+        account.setStudyEnrollmentResultByEmail(notifications.isStudyEnrollmentResultByEmail());
+        account.setStudyEnrollmentResultByWeb(notifications.isStudyEnrollmentResultByWeb());
+        account.setStudyUpdateByWeb(notifications.isStudyUpdatedByWeb());
+        account.setStudyUpdateByEmail(notifications.isStudyUpdatedByEmail());*/
         accountRepository.save(account);
     }
 }

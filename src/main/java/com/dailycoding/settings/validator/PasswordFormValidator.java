@@ -1,5 +1,6 @@
-package com.dailycoding.settings;
+package com.dailycoding.settings.validator;
 
+import com.dailycoding.settings.form.PasswordForm;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
