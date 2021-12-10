@@ -114,4 +114,10 @@ public class AccountService implements UserDetailsService {
         account.setStudyUpdateByEmail(notifications.isStudyUpdatedByEmail());*/
         accountRepository.save(account);
     }
+
+    public void updateNickname(Account account, String nickname) {
+        account.setNickname(nickname);
+        accountRepository.save(account);
+        login(account);
+    }
 }
