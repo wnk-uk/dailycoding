@@ -33,16 +33,30 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-    private Account saveNewAccount(@Valid SignUpForm signUpForm) {
-        Account account = Account.builder()
-                .email(signUpForm.getEmail())
-                .nickname(signUpForm.getNickname())
-                .password(passwordEncoder.encode(signUpForm.getPassword()))
-                .studyCreateByWeb(true)
-                .studyEnrollmentResultByWeb(true)
-                .studyUpdateByWeb(true)
-                .build();
+//    private Account saveNewAccount(@Valid SignUpForm signUpForm) {
+//        Account account = Account.builder()
+//                .email(signUpForm.getEmail())
+//                .nickname(signUpForm.getNickname())
+//                .password(passwordEncoder.encode(signUpForm.getPassword()))
+//                .studyCreateByWeb(true)
+//                .studyEnrollmentResultByWeb(true)
+//                .studyUpdateByWeb(true)
+//                .build();
+//
+//        return accountRepository.save(account);
+//    }
 
+    public Account processNewAccount(SignUpForm signUpForm) {
+        Account newAccount = saveNewAccount(signUpForm);
+        sendSingUpConfirmEmail(newAccount);
+        return newAccount;
+    }
+
+    //refactoring
+    private Account saveNewAccount(@Valid SignUpForm signUpForm) {
+        signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+        Account account = modelMapper.map(signUpForm, Account.class);
+        account.generateEmailCheckToken();
         return accountRepository.save(account);
     }
 
@@ -52,14 +66,6 @@ public class AccountService implements UserDetailsService {
         mailMessage.setSubject("스터디 올레 회원 가입 인증");
         mailMessage.setText("/check-email-token?token=" + newAccount.getEmailCheckToken() + "&email=" + newAccount.getEmail());
         javaMailSender.send(mailMessage);
-    }
-
-
-    public Account processNewAccount(SignUpForm signUpForm) {
-        Account newAccount = saveNewAccount(signUpForm);
-        newAccount.generateEmailCheckToken();
-        sendSingUpConfirmEmail(newAccount);
-        return newAccount;
     }
 
     public void login(Account account) {
