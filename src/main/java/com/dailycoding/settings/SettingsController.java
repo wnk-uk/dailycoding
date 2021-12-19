@@ -8,6 +8,7 @@ import com.dailycoding.settings.form.*;
 import com.dailycoding.settings.validator.NicknameValidator;
 import com.dailycoding.settings.validator.PasswordFormValidator;
 import com.dailycoding.tag.TagRepository;
+import com.dailycoding.zone.ZoneRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +53,22 @@ public class SettingsController {
     static final String SETTINGS_TAGS_VIEW_NAME = "settings/tags";
     static final String SETTINGS_TAGS_URL = "/" + SETTINGS_TAGS_VIEW_NAME;
 
+
+    //refactoring
+    //    static final String ROOT = "/";
+    //    static final String SETTINGS = "settings";
+    //    static final String PROFILE = "/profile";
+    //    static final String PASSWORD = "/password";
+    //    static final String NOTIFICATIONS = "/notifications";
+    //    static final String ACCOUNT = "/account";
+    //    static final String TAGS = "/tags";
+    //    static final String ZONES = "/zones";
+
     private final AccountService accountService;
     private final ModelMapper modelMapper;
     private final NicknameValidator nicknameValidator;
     private final TagRepository tagRepository;
+    private final ZoneRepository zoneRepository;
     private final ObjectMapper objectMapper;
 
     @GetMapping(SETTINGS_PROFILE_URL)
