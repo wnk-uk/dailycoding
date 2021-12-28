@@ -17,7 +17,7 @@
     "jquery-cropper": "^1.0.1",
     "mark.js": "^8.11.1",
     "moment": "^2.24.0",
-    "summernote": "^0.8.16"
+    "summernote": "^0.8.20"
   },
   "devDependencies": {},
   "description": ""
