@@ -1,4 +1,4 @@
-package com.dailycoding.study.form;
+package com.dailycoding.study;
 
 import com.dailycoding.domain.Study;
 import org.springframework.data.jpa.repository.EntityGraph;

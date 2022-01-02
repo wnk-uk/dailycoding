@@ -1,7 +1,7 @@
 package com.dailycoding.study.validator;
 
 import com.dailycoding.study.form.StudyForm;
-import com.dailycoding.study.form.StudyRepository;
+import com.dailycoding.study.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
