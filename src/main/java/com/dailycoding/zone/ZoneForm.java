@@ -1,4 +1,4 @@
-package com.dailycoding.settings.form;
+package com.dailycoding.zone;
 
 import com.dailycoding.domain.Zone;
 import lombok.Data;
@@ -8,7 +8,9 @@ public class ZoneForm {
 
     private String zoneName;
 
-    public String getCityName() { return zoneName.substring(0, zoneName.indexOf("(")); }
+    public String getCityName() {
+        return zoneName.substring(0, zoneName.indexOf("("));
+    }
 
     public String getProvinceName() {
         return zoneName.substring(zoneName.indexOf("/") + 1);
@@ -19,8 +21,9 @@ public class ZoneForm {
     }
 
     public Zone getZone() {
-        return Zone.builder().city(getCityName())
-                .localNameOfCity(getLocalNameOfCity())
-                .province(getProvinceName()).build();
+        return Zone.builder().city(this.getCityName())
+                .localNameOfCity(this.getLocalNameOfCity())
+                .province(this.getProvinceName()).build();
     }
+
 }

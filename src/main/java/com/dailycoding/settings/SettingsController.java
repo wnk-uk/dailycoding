@@ -7,12 +7,13 @@ import com.dailycoding.domain.Tag;
 import com.dailycoding.settings.form.*;
 import com.dailycoding.settings.validator.NicknameValidator;
 import com.dailycoding.settings.validator.PasswordFormValidator;
+import com.dailycoding.tag.TagForm;
+import com.dailycoding.tag.TagService;
 import com.dailycoding.tag.TagRepository;
 import com.dailycoding.zone.ZoneRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.dom4j.rule.Mode;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,7 +70,7 @@ public class SettingsController {
     private final TagRepository tagRepository;
     private final ZoneRepository zoneRepository;
     private final ObjectMapper objectMapper;
-
+    private final TagService tagService;
     @GetMapping(SETTINGS_PROFILE_URL)
     public String updateProfileForm(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
@@ -170,16 +170,17 @@ public class SettingsController {
     @PostMapping(SETTINGS_TAGS_URL + "/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
-        String title = tagForm.getTagTitle();
+        //String title = tagForm.getTagTitle();
 
 //        Tag tag = tagRepository.findByTitle(title).orElseGet(() -> tagRepository.save(Tag.builder()
 //                    .title(tagForm.getTagTitle())
 //                    .build()));
 
-        Tag tag = tagRepository.findByTitle(title);
-        if (tag == null) {
-            tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
-        }
+//        Tag tag = tagRepository.findByTitle(title);
+//        if (tag == null) {
+//            tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
+//        }
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
 
         accountService.addTag(account, tag);
 
@@ -189,16 +190,17 @@ public class SettingsController {
     @PostMapping( SETTINGS_TAGS_URL + "/remove")
     @ResponseBody
     public ResponseEntity removeTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
-        String title = tagForm.getTagTitle();
+        //String title = tagForm.getTagTitle();
 
 //        Tag tag = tagRepository.findByTitle(title).orElseGet(() -> tagRepository.save(Tag.builder()
 //                    .title(tagForm.getTagTitle())
 //                    .build()));
 
-        Tag tag = tagRepository.findByTitle(title);
-        if (tag == null) {
-            return ResponseEntity.badRequest().build();
-        }
+//        Tag tag = tagRepository.findByTitle(title);
+//        if (tag == null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
 
         accountService.removeTag(account, tag);
         return ResponseEntity.ok().build();
